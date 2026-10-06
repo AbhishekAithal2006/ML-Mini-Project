@@ -1,0 +1,16 @@
+__pycache__/
+.venv/
+venv/
+outputs/*.csv
+!outputs/classifier_results.csv
+!outputs/classifier_threshold_sweep.csv
+!outputs/survival_results.csv
+outputs/*.json
+!outputs/run_metadata.json
+!outputs/logrank.json
+outputs/*.log
+outputs/.DS_Store
+/.presentation-build/
+data/private/*
+!data/private/.gitkeep
+.DS_Store
