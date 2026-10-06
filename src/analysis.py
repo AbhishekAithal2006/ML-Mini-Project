@@ -19,7 +19,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import (balanced_accuracy_score, f1_score, precision_score,
                              recall_score, roc_auc_score)
-from sklearn.model_selection import StratifiedKFold, cross_val_predict
+from sklearn.model_selection import StratifiedKFold, cross_val_predict, GridSearchCV
 from sklearn.naive_bayes import CategoricalNB
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import KBinsDiscretizer, OneHotEncoder, StandardScaler
@@ -93,6 +93,77 @@ def classifier_scores(df: pd.DataFrame, threshold: float, folds: int, seed: int)
                      "roc_auc": roc_auc_score(y, prob), "n_known": len(y),
                      "n_high_risk": int(y.sum()), "threshold_days": threshold})
     return pd.DataFrame(rows).sort_values("balanced_accuracy", ascending=False), {"n_known": len(y), "n_excluded_censored_before_threshold": int((~((df.duration >= threshold) | ((df.duration < threshold) & (df.event == 1)))).sum())}
+
+
+def tuned_classifier_scores(df: pd.DataFrame, threshold: float, folds: int, seed: int) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Nested CV: select hyperparameters in inner folds and score outer held-out folds."""
+    from sklearn.model_selection import ParameterGrid
+
+    sub, y = known_binary_outcome(df, threshold)
+    if len(np.unique(y)) != 2 or min(np.bincount(y)) < folds:
+        raise ValueError("Not enough examples in both known outcome classes for requested CV folds.")
+    X = sub.drop(columns=["duration", "event"])
+    num = X.select_dtypes(include=np.number).columns.tolist()
+    cat = [c for c in X.columns if c not in num]
+    numeric = Pipeline([("impute", SimpleImputer(strategy="median")), ("scale", StandardScaler())])
+    categorical = Pipeline([("impute", SimpleImputer(strategy="most_frequent")),
+                            ("encode", OneHotEncoder(handle_unknown="ignore", sparse_output=False))])
+    prep = ColumnTransformer([("num", numeric, num), ("cat", categorical, cat)])
+    nbprep = ColumnTransformer([
+        ("num", Pipeline([("impute", SimpleImputer(strategy="median")),
+                           ("bins", KBinsDiscretizer(n_bins=4, encode="ordinal", strategy="quantile"))]), num),
+        ("cat", Pipeline([("impute", SimpleImputer(strategy="most_frequent")),
+                           ("encode", OneHotEncoder(handle_unknown="ignore", sparse_output=False))]), cat),
+    ])
+    searches = {
+        "Naive Bayes": (Pipeline([("prep", nbprep), ("model", CategoricalNB())]), {
+            "model__alpha": [0.1, 1.0, 5.0], "model__class_prior": [None, [0.5, 0.5]],
+        }),
+        "Logistic Regression": (Pipeline([("prep", prep), ("model", LogisticRegression(max_iter=2000))]), {
+            "model__C": [0.1, 1.0, 10.0], "model__class_weight": [None, "balanced", {0: 1, 1: 2}],
+        }),
+        "SVM (RBF)": (Pipeline([("prep", prep), ("model", SVC(kernel="rbf", probability=False, random_state=seed))]), {
+            "model__C": [0.1, 1.0, 10.0], "model__gamma": ["scale", "auto"],
+            "model__class_weight": [None, "balanced"],
+        }),
+        "Random Forest": (Pipeline([("prep", prep), ("model", RandomForestClassifier(n_estimators=250, random_state=seed, n_jobs=1))]), {
+            "model__max_depth": [None, 6], "model__min_samples_leaf": [2, 10],
+            "model__max_features": ["sqrt", 0.75], "model__class_weight": [None, "balanced"],
+        }),
+        "Gradient Boosting": (Pipeline([("prep", prep), ("model", HistGradientBoostingClassifier(random_state=seed))]), {
+            "model__max_iter": [75, 150], "model__learning_rate": [0.05, 0.1],
+            "model__max_leaf_nodes": [7, 15],
+        }),
+    }
+    outer = StratifiedKFold(n_splits=folds, shuffle=True, random_state=seed)
+    oof = {name: {"pred": np.zeros(len(y), dtype=int), "score": np.zeros(len(y), dtype=float)} for name in searches}
+    param_rows = []
+    for fold, (train_idx, test_idx) in enumerate(outer.split(X, y), start=1):
+        inner = StratifiedKFold(n_splits=3, shuffle=True, random_state=seed + fold)
+        for name, (estimator, grid) in searches.items():
+            search = GridSearchCV(estimator, grid, scoring="balanced_accuracy", cv=inner, n_jobs=1, refit=True)
+            search.fit(X.iloc[train_idx], y[train_idx])
+            fitted = search.best_estimator_
+            oof[name]["pred"][test_idx] = fitted.predict(X.iloc[test_idx])
+            if hasattr(fitted, "predict_proba"):
+                scores = fitted.predict_proba(X.iloc[test_idx])[:, 1]
+            else:
+                scores = fitted.decision_function(X.iloc[test_idx])
+            oof[name]["score"][test_idx] = scores
+            param_rows.append({"classifier": name, "outer_fold": fold,
+                               "best_inner_balanced_accuracy": float(search.best_score_),
+                               "best_params": json.dumps(search.best_params_, sort_keys=True)})
+    rows = []
+    for name, values in oof.items():
+        pred, score = values["pred"], values["score"]
+        rows.append({"classifier": name, "balanced_accuracy": balanced_accuracy_score(y, pred),
+                     "precision": precision_score(y, pred, zero_division=0),
+                     "recall": recall_score(y, pred, zero_division=0),
+                     "f1": f1_score(y, pred, zero_division=0), "roc_auc": roc_auc_score(y, score),
+                     "n_known": len(y), "n_high_risk": int(y.sum()), "threshold_days": threshold,
+                     "evaluation": "5-fold outer CV; 3-fold inner hyperparameter search"})
+    result = pd.DataFrame(rows).sort_values("balanced_accuracy", ascending=False)
+    return result, pd.DataFrame(param_rows)
 
 
 def survival_models(df: pd.DataFrame, folds: int, seed: int, output: Path) -> pd.DataFrame:
@@ -207,6 +278,7 @@ def main() -> None:
     ap.add_argument("--folds", type=int, default=5, help="Stratified folds for classifiers; K folds for Cox")
     ap.add_argument("--seed", type=int, default=229)
     ap.add_argument("--output", type=Path, default=Path("outputs"))
+    ap.add_argument("--tune", action="store_true", help="Run nested 3-fold hyperparameter search inside the outer CV at the selected horizon")
     args = ap.parse_args()
     if args.demo == bool(args.data):
         ap.error("Provide exactly one of --demo or --data")
@@ -221,7 +293,8 @@ def main() -> None:
         ap.error("duration must be positive and event must contain only 0/1")
     args.output.mkdir(parents=True, exist_ok=True)
     classifier_tables, sweep_meta = [], []
-    for horizon in (240, 270, 300, 330, 360):
+    horizons = list(dict.fromkeys([240, 270, 300, 330, 360, args.threshold]))
+    for horizon in horizons:
         try:
             table, meta = classifier_scores(df, horizon, args.folds, args.seed)
             classifier_tables.append(table)
@@ -244,8 +317,14 @@ def main() -> None:
     cls.to_csv(args.output / "classifier_results.csv", index=False)
     all_classifiers.to_csv(args.output / "classifier_threshold_sweep.csv", index=False)
     surv.to_csv(args.output / "survival_results.csv", index=False)
-    (args.output / "run_metadata.json").write_text(json.dumps({"synthetic_demo": args.demo, "rows": len(df), "threshold_days": selected_threshold, "folds": args.folds, "seed": args.seed, **selected_known}, indent=2) + "\n")
+    (args.output / "run_metadata.json").write_text(json.dumps({"synthetic_demo": args.demo, "rows": len(df), "events": int(df.event.sum()), "censored": int((df.event == 0).sum()), "threshold_days": selected_threshold, "folds": args.folds, "seed": args.seed, **selected_known}, indent=2) + "\n")
     (args.output / "logrank.json").write_text(json.dumps(km, indent=2) + "\n")
+    if args.tune:
+        tuned, params = tuned_classifier_scores(df, selected_threshold, args.folds, args.seed)
+        tuned.to_csv(args.output / "classifier_tuned_results.csv", index=False)
+        params.to_csv(args.output / "classifier_tuned_params.csv", index=False)
+        print("\nNested hyperparameter tuning results at selected threshold:\n", tuned.to_string(index=False))
+        print("\nFold-specific best parameters saved to classifier_tuned_params.csv")
     print("Classifier CV results at selected threshold:\n", cls.to_string(index=False))
     print("\nThreshold sweep saved to outputs/classifier_threshold_sweep.csv")
     print("\nSurvival CV results:\n", surv.to_string(index=False))

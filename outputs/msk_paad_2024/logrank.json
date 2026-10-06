@@ -1,0 +1,8 @@
+{
+  "risk_grouping": "median full-cohort Cox partial hazard",
+  "n_higher_risk": 1130,
+  "n_lower_risk": 1130,
+  "logrank_statistic": 324.2356016824213,
+  "logrank_p_value": 1.731067971084374e-72,
+  "interpretation": "Descriptive split and curves use the complete cohort; not out-of-fold validation."
+}

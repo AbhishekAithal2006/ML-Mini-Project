@@ -5,6 +5,8 @@ outputs/*.csv
 !outputs/classifier_results.csv
 !outputs/classifier_threshold_sweep.csv
 !outputs/survival_results.csv
+!outputs/classifier_tuned_results.csv
+!outputs/classifier_tuned_params.csv
 outputs/*.json
 !outputs/run_metadata.json
 !outputs/logrank.json

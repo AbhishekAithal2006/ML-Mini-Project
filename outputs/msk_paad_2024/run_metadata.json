@@ -1,0 +1,11 @@
+{
+  "synthetic_demo": false,
+  "rows": 2260,
+  "events": 1521,
+  "censored": 739,
+  "threshold_days": 270.0,
+  "folds": 5,
+  "seed": 229,
+  "n_known": 2027,
+  "n_excluded_censored_before_threshold": 233
+}
