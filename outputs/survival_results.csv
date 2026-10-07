@@ -1,2 +1,0 @@
-feature_set,n_features,mean_c_index,std_c_index,successful_folds,requested_folds
-clinical,3,0.5219192771536669,0.0348838842917119,5,5

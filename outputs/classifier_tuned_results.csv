@@ -1,6 +1,0 @@
-classifier,balanced_accuracy,precision,recall,f1,roc_auc,n_known,n_high_risk,threshold_days,evaluation
-Logistic Regression,0.6243255395683454,0.26506024096385544,0.6875,0.3826086956521739,0.6232014388489209,171,32,270.0,5-fold outer CV; 3-fold inner hyperparameter search
-SVM (RBF),0.6183678057553956,0.25555555555555554,0.71875,0.3770491803278688,0.5930755395683454,171,32,270.0,5-fold outer CV; 3-fold inner hyperparameter search
-Naive Bayes,0.6063399280575539,0.25,0.6875,0.36666666666666664,0.6138714028776979,171,32,270.0,5-fold outer CV; 3-fold inner hyperparameter search
-Random Forest,0.5123651079136691,0.2,0.3125,0.24390243902439024,0.5676708633093526,171,32,270.0,5-fold outer CV; 3-fold inner hyperparameter search
-Gradient Boosting,0.4892086330935252,0.0,0.0,0.0,0.5807104316546763,171,32,270.0,5-fold outer CV; 3-fold inner hyperparameter search

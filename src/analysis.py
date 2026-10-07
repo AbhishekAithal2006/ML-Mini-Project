@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reproducible survival-analysis replication and binary-classifier extension.
+"""MSK 2024 survival analysis and binary-classifier extension.
 
 Input CSV must have `duration` (time from diagnosis to event or last follow-up)
 and `event` (1=event observed, 0=right-censored). Other columns are predictors.
@@ -330,7 +330,7 @@ def main() -> None:
     print("\nSurvival CV results:\n", surv.to_string(index=False))
     print("\nKaplan–Meier log-rank result:\n", json.dumps(km, indent=2))
     if args.demo:
-        print("\nNOTE: synthetic demonstration only; do not present these results as replication findings.")
+        print("\nNOTE: synthetic demonstration only; do not present these results as MSK cohort findings.")
 
 
 if __name__ == "__main__":
