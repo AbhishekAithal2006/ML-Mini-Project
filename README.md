@@ -68,6 +68,4 @@ Analysis tables and the Kaplan–Meier plot are saved under `outputs/msk_paad_20
 
 The assignment requires a private GitHub repository shared with faculty/TAs. Add the instructor-assigned problem statement and member contribution details when those are provided.
 
-## Replication limits
 
-The Jamalian report describes 80 Stanford patients, clinical and radiomic features, Naive Bayes threshold selection, and Cox models. The MSK cohort is a different public population with a different feature set and no radiomics. This project reproduces the general survival-analysis and classifier-comparison workflow, not the paper's dataset or exact scores.
