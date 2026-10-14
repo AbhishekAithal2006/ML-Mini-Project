@@ -1,6 +1,6 @@
 # Pancreatic Cancer Survival Analysis
 
-This mini-project applies a survival-analysis workflow to the public cBioPortal PDAC MSK 2024 cohort. It compares five classifiers for recorded death by 270 days and evaluates a clinical Cox proportional-hazards model. The Stanford cohort described by Jamalian is restricted, so this project does not reproduce the paper's patients, radiomic features, or numerical results.
+This mini-project applies a survival-analysis workflow to the public cBioPortal PDAC MSK 2024 cohort. It compares five classifiers for recorded death by 270 days and evaluates a clinical Cox proportional-hazards model. 
 
 ## Team
 
