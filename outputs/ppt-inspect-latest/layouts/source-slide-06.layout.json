@@ -1,0 +1,12 @@
+{"schema":"openai.presentation.layout/v5","unit":"px","slide":{"id":"sl/x8f69ofe","index":5,"layout":{"id":"ly/14ra9krq","name":"Blank"},"backgroundColor":"rgba(251,248,242,1)","position":{"left":0,"top":0,"width":1280,"height":720}},
+"elements":[
+{"id":"sh/h4bupgn6","kind":"textbox","position":{"left":64,"top":42,"width":1120,"height":62},"text":"Kaplan–Meier curves by Cox risk group","style":{"fontSize":36,"typeface":"Aptos","color":"#3D2C66","bold":true,"alignment":"left"},"geometry":"rect","lineWidth":0},
+{"id":"sh/yhg7epsj","kind":"shape","position":{"left":64,"top":115,"width":1152,"height":3},"geometry":"rect","fillColor":"#D95D76","lineWidth":0},
+{"id":"sh/zi98nu94","kind":"textbox","position":{"left":64,"top":674,"width":1152,"height":22},"text":"UE24CS352A  ·  ML MINI-PROJECT                                           06 / 07","style":{"fontSize":13,"typeface":"Aptos","color":"#6E7182","alignment":"left"},"geometry":"rect","lineWidth":0},
+{"id":"im/ju1cfeto","kind":"image","position":{"left":141.24,"top":145,"width":617.51,"height":460},"crop":{"left":0,"top":0,"right":0,"bottom":0}},
+{"id":"sh/98rqt4r6","kind":"textbox","position":{"left":858,"top":185,"width":320,"height":37},"text":"Median risk split","style":{"fontSize":22,"typeface":"Aptos","color":"#D95D76","bold":true,"alignment":"left"},"geometry":"rect","lineWidth":0},
+{"id":"sh/ml07i9sv","kind":"textbox","position":{"left":858,"top":242,"width":320,"height":70},"text":"Higher Cox risk\nn = 1,130","style":{"fontSize":21,"typeface":"Aptos","color":"#2D2B36","alignment":"left"},"geometry":"rect","lineWidth":0},
+{"id":"sh/7m98ru9g","kind":"textbox","position":{"left":858,"top":329,"width":320,"height":70},"text":"Lower Cox risk\nn = 1,130","style":{"fontSize":21,"typeface":"Aptos","color":"#2D2B36","alignment":"left"},"geometry":"rect","lineWidth":0},
+{"id":"sh/oryp8fah","kind":"textbox","position":{"left":858,"top":429,"width":330,"height":44},"text":"Log-rank p = 1.73e-72","style":{"fontSize":20,"typeface":"Aptos","color":"#3D2C66","bold":true,"alignment":"left"},"geometry":"rect","lineWidth":0},
+{"id":"sh/pc76hkr2","kind":"textbox","position":{"left":858,"top":489,"width":310,"height":88},"text":"Full-cohort descriptive split; curves are not out-of-fold validation.","style":{"fontSize":16,"typeface":"Aptos","color":"#B3475A","alignment":"left"},"geometry":"rect","lineWidth":0}
+]}

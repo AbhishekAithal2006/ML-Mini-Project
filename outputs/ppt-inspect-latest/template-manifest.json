@@ -1,0 +1,88 @@
+{
+  "sourcePptx": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/survival_project_presentation_msk2024_recolored.pptx",
+  "workspace": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder",
+  "outDir": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest",
+  "generatedAt": "2026-10-11T03:24:03.304Z",
+  "slideCount": 7,
+  "slideArtifacts": [
+    {
+      "slide": 1,
+      "previewPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/source-slides/source-slide-01.png",
+      "previewRelativePath": "outputs/ppt-inspect-latest/source-slides/source-slide-01.png",
+      "layoutPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/layouts/source-slide-01.layout.json",
+      "layoutRelativePath": "outputs/ppt-inspect-latest/layouts/source-slide-01.layout.json"
+    },
+    {
+      "slide": 2,
+      "previewPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/source-slides/source-slide-02.png",
+      "previewRelativePath": "outputs/ppt-inspect-latest/source-slides/source-slide-02.png",
+      "layoutPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/layouts/source-slide-02.layout.json",
+      "layoutRelativePath": "outputs/ppt-inspect-latest/layouts/source-slide-02.layout.json"
+    },
+    {
+      "slide": 3,
+      "previewPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/source-slides/source-slide-03.png",
+      "previewRelativePath": "outputs/ppt-inspect-latest/source-slides/source-slide-03.png",
+      "layoutPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/layouts/source-slide-03.layout.json",
+      "layoutRelativePath": "outputs/ppt-inspect-latest/layouts/source-slide-03.layout.json"
+    },
+    {
+      "slide": 4,
+      "previewPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/source-slides/source-slide-04.png",
+      "previewRelativePath": "outputs/ppt-inspect-latest/source-slides/source-slide-04.png",
+      "layoutPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/layouts/source-slide-04.layout.json",
+      "layoutRelativePath": "outputs/ppt-inspect-latest/layouts/source-slide-04.layout.json"
+    },
+    {
+      "slide": 5,
+      "previewPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/source-slides/source-slide-05.png",
+      "previewRelativePath": "outputs/ppt-inspect-latest/source-slides/source-slide-05.png",
+      "layoutPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/layouts/source-slide-05.layout.json",
+      "layoutRelativePath": "outputs/ppt-inspect-latest/layouts/source-slide-05.layout.json"
+    },
+    {
+      "slide": 6,
+      "previewPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/source-slides/source-slide-06.png",
+      "previewRelativePath": "outputs/ppt-inspect-latest/source-slides/source-slide-06.png",
+      "layoutPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/layouts/source-slide-06.layout.json",
+      "layoutRelativePath": "outputs/ppt-inspect-latest/layouts/source-slide-06.layout.json"
+    },
+    {
+      "slide": 7,
+      "previewPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/source-slides/source-slide-07.png",
+      "previewRelativePath": "outputs/ppt-inspect-latest/source-slides/source-slide-07.png",
+      "layoutPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/layouts/source-slide-07.layout.json",
+      "layoutRelativePath": "outputs/ppt-inspect-latest/layouts/source-slide-07.layout.json"
+    }
+  ],
+  "inspectPath": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/template-inspect.ndjson",
+  "inspectRelativePath": "outputs/ppt-inspect-latest/template-inspect.ndjson",
+  "inspectTruncated": false,
+  "inspectMetadata": {
+    "target": {
+      "id": "pr/7ne1en"
+    },
+    "omittedRecords": 0,
+    "abbreviatedRecords": 0,
+    "notices": []
+  },
+  "extractedMedia": [
+    {
+      "entry": "ppt/media/image.png",
+      "path": "/Users/abhishekaithal/Documents/SEM 5/ML/Mini-Project/untitled folder/outputs/ppt-inspect-latest/assets/ppt/media/image.png",
+      "relativePath": "outputs/ppt-inspect-latest/assets/ppt/media/image.png",
+      "bytes": 117015
+    }
+  ],
+  "fonts": [
+    "+mj-lt",
+    "+mn-lt",
+    "Aptos"
+  ],
+  "packageParts": {
+    "mediaCount": 1,
+    "slideXmlCount": 7,
+    "chartCount": 0,
+    "tableSlideCount": 1
+  }
+}

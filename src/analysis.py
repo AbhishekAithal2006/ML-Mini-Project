@@ -10,11 +10,34 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
+import tempfile
 import warnings
+
+# CV and estimator jobs are serial, so tell joblib to use one worker. This also
+# avoids its unreliable macOS physical-core probe on some Python installs.
+os.environ.setdefault("LOKY_MAX_CPU_COUNT", "1")
 
 import numpy as np
 import pandas as pd
+
+# Naive Bayes bins numeric predictors. Low-cardinality demo features (such as
+# binary treatment and stage values) can produce duplicate quantile edges;
+# sklearn drops those redundant bins and emits this harmless warning.
+warnings.filterwarnings(
+    "ignore",
+    message=r"Bins whose width are too small.*",
+    category=UserWarning,
+    module=r"sklearn\.preprocessing\._discretization",
+)
+warnings.filterwarnings(
+    "ignore",
+    message=r"The `probability` parameter was deprecated in 1\.9.*",
+    category=FutureWarning,
+    module=r"sklearn\.svm\._base",
+)
+
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import (balanced_accuracy_score, f1_score, precision_score,
@@ -85,12 +108,12 @@ def classifier_scores(df: pd.DataFrame, threshold: float, folds: int, seed: int)
     rows = []
     for name, model in models.items():
         pred = cross_val_predict(model, X, y, cv=cv, method="predict", n_jobs=1)
-        prob = cross_val_predict(model, X, y, cv=cv, method="predict_proba", n_jobs=1)[:, 1]
+        score = cross_val_predict(model, X, y, cv=cv, method="predict_proba", n_jobs=1)[:, 1]
         rows.append({"classifier": name, "balanced_accuracy": balanced_accuracy_score(y, pred),
                      "precision": precision_score(y, pred, zero_division=0),
                      "recall": recall_score(y, pred, zero_division=0),
                      "f1": f1_score(y, pred, zero_division=0),
-                     "roc_auc": roc_auc_score(y, prob), "n_known": len(y),
+                     "roc_auc": roc_auc_score(y, score), "n_known": len(y),
                      "n_high_risk": int(y.sum()), "threshold_days": threshold})
     return pd.DataFrame(rows).sort_values("balanced_accuracy", ascending=False), {"n_known": len(y), "n_excluded_censored_before_threshold": int((~((df.duration >= threshold) | ((df.duration < threshold) & (df.event == 1)))).sum())}
 
@@ -225,6 +248,9 @@ def survival_models(df: pd.DataFrame, folds: int, seed: int, output: Path) -> pd
 
 def risk_group_kaplan_meier(df: pd.DataFrame, output: Path) -> dict:
     """Fit descriptive full-cohort Cox model and plot median-risk KM curves."""
+    mpl_config = Path(tempfile.gettempdir()) / "ml_mini_project_matplotlib"
+    mpl_config.mkdir(parents=True, exist_ok=True)
+    os.environ.setdefault("MPLCONFIGDIR", str(mpl_config))
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -232,6 +258,9 @@ def risk_group_kaplan_meier(df: pd.DataFrame, output: Path) -> dict:
     from lifelines.statistics import logrank_test
 
     cols = [c for c in ("clinical_age", "clinical_gender", "clinical_stage") if c in df.columns]
+    if not cols:
+        # Synthetic demo data uses generic feature names rather than MSK prefixes.
+        cols = [c for c in df.columns if c not in ("duration", "event")]
     features = df[cols].copy()
     cats = features.select_dtypes(exclude=np.number).columns
     features = pd.get_dummies(features, columns=list(cats), drop_first=True, dtype=float)
@@ -329,8 +358,7 @@ def main() -> None:
     print("\nThreshold sweep saved to outputs/classifier_threshold_sweep.csv")
     print("\nSurvival CV results:\n", surv.to_string(index=False))
     print("\nKaplan–Meier log-rank result:\n", json.dumps(km, indent=2))
-    if args.demo:
-        print("\nNOTE: synthetic demonstration only; do not present these results as MSK cohort findings.")
+    
 
 
 if __name__ == "__main__":
